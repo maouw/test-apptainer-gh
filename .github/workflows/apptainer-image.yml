@@ -39,7 +39,7 @@ jobs:
 
       - name: Install Apptainer
         if: ${{ env.keepgoing == 'true' }}
-        run: deb=$(curl -w "%{filename_effective}" -LO https://github.com/apptainer/apptainer/releases/download/v1.2.4/apptainer_1.2.4_amd64.deb) && sudo apt install -y "$deb"; rm -f "$deb"; unset deb
+        run: deb=$(curl -w "%{filename_effective}" -LO https://github.com/apptainer/apptainer/releases/download/v1.2.4/apptainer_1.2.4_amd64.deb) && sudo apt install -y "./$deb"; rm -f "$deb"; unset deb
 
       - name: Check out code for the container build
         if: ${{ env.keepgoing == 'true' }}
