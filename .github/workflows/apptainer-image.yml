@@ -1,0 +1,75 @@
+name: Singularity Build (native)
+on: 
+  push:
+
+    # Edit the branches here if you want to change deploy behavior
+    branches:
+      - main
+      - master
+
+jobs:
+  changes:
+    name: "Changed Singularity Recipes"
+    runs-on: ubuntu-latest
+    outputs:
+      changed_file: ${{ steps.files.outputs.added_modified }}
+    steps:
+      - id: files
+        uses: jitterbit/get-changed-files@b17fbb00bdc0c0f63fcf166580804b4d2cdc2a42
+        with:
+          format: 'json'
+  
+  build-test-containers:
+    needs:
+      - changes
+    runs-on: ubuntu-latest
+    strategy:
+      # Keep going on other deployments if anything bloops
+      fail-fast: false
+      matrix:
+        changed_file: ${{ fromJson(needs.changes.outputs.changed_file) }}
+
+    name: Check ${{ matrix.changed_file }}
+    steps:
+      - name: Continue if Singularity Recipe
+        run: |
+          # Continue if we have a changed Singularity recipe
+          if [[ "${{ matrix.changed_file }}" = *Singularity* ]]; then
+            echo "keepgoing=true" >> $GITHUB_ENV
+          fi          
+
+      - name: Install Apptainer
+        if: ${{ env.keepgoing == 'true' }}
+        run: deb=$(curl -w "%{filename_effective}" -LO https://github.com/apptainer/apptainer/releases/download/v1.2.4/apptainer_1.2.4_amd64.deb) && sudo apt install -y "$deb"; rm -f "$deb"; unset deb
+
+
+      - name: Check out code for the container build
+        if: ${{ env.keepgoing == 'true' }}
+        uses: actions/checkout@v4
+
+      - name: Build Container
+        if: ${{ env.keepgoing == 'true' }}
+        env:
+          recipe: ${{ matrix.changed_file }}
+        run: |
+          ls 
+          if [ -f "${{ matrix.changed_file }}" ]; then
+            apptainer build container.sif ${{ matrix.changed_file }}
+            tag=$(echo "${recipe/Singularity\./}")
+            if [ "$tag" == "Singularity" ]; then
+                tag=latest
+            fi
+            # Build the container and name by tag
+            echo "Tag is $tag."
+            echo "tag=$tag" >> $GITHUB_ENV
+          else
+            echo "${{ matrix.changed_file }} is not found."
+            echo "Present working directory: $PWD"
+            ls
+          fi
+      - name: Login and Deploy Container
+        if: (github.event_name != 'pull_request')
+        env:
+          keepgoing: ${{ env.keepgoing }}
+        run: |         
+          [[ "${keepgoing}" == "true" ]] && echo ${{ secrets.GITHUB_TOKEN }} | apptainer remote login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} oras://ghcr.io && apptainer push container.sif oras://ghcr.io/${GITHUB_REPOSITORY}:${tag}
