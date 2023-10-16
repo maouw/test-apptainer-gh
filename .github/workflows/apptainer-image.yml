@@ -6,7 +6,7 @@ on:
       - main
       - master
     tags:
-      - release/*
+      - release-*
 
 jobs:
   build-and-push-image:
