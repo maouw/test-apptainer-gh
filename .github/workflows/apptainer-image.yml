@@ -12,6 +12,9 @@ jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
     name: Build Apptainer image
+    permissions:
+        contents: read
+        packages: write
     steps:
       - name: Install Apptainer
         run: deb=$(curl -w "%{filename_effective}" -LO https://github.com/apptainer/apptainer/releases/download/v1.2.4/apptainer_1.2.4_amd64.deb) && sudo apt install -y "./$deb"; rm -f "$deb"; unset deb
