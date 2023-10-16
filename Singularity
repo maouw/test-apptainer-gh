@@ -1,6 +1,9 @@
 Bootstrap: docker
 From: mambaorg/micromamba:{{ MICROMAMBA_TAG }}
 
+%labels
+	foo=1
+
 %arguments
 	MICROMAMBA_TAG=jammy-cuda-12.1.1
 	COWSAY_PYTHON_VERSION=3.9
