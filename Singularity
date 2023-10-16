@@ -14,4 +14,5 @@ From: mambaorg/micromamba:{{ MICROMAMBA_TAG }}
     micromamba clean --all --yes
 
 %runscript
+	# Run cowsay with the arguments passed to the container
 	micromamba run -n base cowsay -t "${@:-Hello World!}"
