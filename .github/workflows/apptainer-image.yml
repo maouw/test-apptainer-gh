@@ -13,7 +13,7 @@ jobs:
         packages: write
     steps:
       - name: Install Apptainer
-        uses: maouw/github-action-apptainer-install
+        uses: maouw/github-action-apptainer-install@b8bd401
       - name: Check out code for the container build
         uses: actions/checkout@v4
       - name: Build Container
