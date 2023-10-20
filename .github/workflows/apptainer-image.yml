@@ -1,4 +1,4 @@
-name: Singularity Build
+name: Apptainer Build
 on:
   push:
     tags:
@@ -13,7 +13,7 @@ jobs:
         packages: write
     steps:
       - name: Install Apptainer
-        uses: maouw/github-action-apptainer-install@b8bd401d03d93eb0800e2362796252898998806a
+        uses: maouw/github-action-apptainer-install@v1
       - name: Check out code for the container build
         uses: actions/checkout@v4
       - name: Build Container
