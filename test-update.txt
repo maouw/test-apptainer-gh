@@ -1,3 +1,5 @@
 A change
 
 Another change
+new line
+new line
