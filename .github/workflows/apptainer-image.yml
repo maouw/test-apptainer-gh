@@ -28,10 +28,10 @@ jobs:
             case "${GITHUB_REF_NAME:-}" in
               v?*) IMAGE_VERSION="${GITHUB_REF_NAME#v}";;
               *@?*) IMAGE_VERSION="${GITHUB_REF_NAME#*@}";;
-        *) echo "Invalid tag: \"${GITHUB_REF_NAME:-}\"" >&2; exit 1;;
-          esac
-          echo "IMAGE_VERSION=${IMAGE_VERSION}" >> "${GITHUB_ENV}"
-         fi
+              *) echo "Invalid tag: \"${GITHUB_REF_NAME:-}\"" >&2; exit 1;;
+            esac
+            echo "IMAGE_VERSION=${IMAGE_VERSION}" >> "${GITHUB_ENV}"
+          fi
       - name: Build Container
         uses: maouw/apptainer-actions/build-and-push@v1
         with:
