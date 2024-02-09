@@ -19,7 +19,7 @@ jobs:
         packages: write
     steps:
       - name: Install Apptainer
-        uses: maouw/apptainer-actions/setup@v1
+        uses: maouw/apptainer-actions/setup@main
       - name: Check out code for the container build
         uses: actions/checkout@v4
       - name: Get version
@@ -34,7 +34,7 @@ jobs:
             echo "IMAGE_VERSION=${IMAGE_VERSION}" >> "${GITHUB_ENV}"
           fi
       - name: Build Container
-        uses: maouw/apptainer-actions/build-and-push@v1
+        uses: maouw/apptainer-actions/build-and-push@main
         with:
           deffile: Singularity
           image-version: ${{ env.IMAGE_VERSION }}
