@@ -20,6 +20,8 @@ jobs:
     steps:
       - name: Install Apptainer
         uses: maouw/apptainer-actions/setup@main
+      - name: Clear disk space
+        uses: maouw/apptainer-actions/make-disk-space@main
       - name: Check out code for the container build
         uses: actions/checkout@v4
       - name: Get version
