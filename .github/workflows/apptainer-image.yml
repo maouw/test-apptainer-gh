@@ -1,8 +1,13 @@
 name: Apptainer Build
 on:
   push:
+    branches:
+      - main
+      - dev
     tags:
-      - release-*
+      - 'v*.*.*'
+      - 'v*.*.*-*'
+      - '*@*'
 
 jobs:
   build-and-push-image:
@@ -13,25 +18,23 @@ jobs:
         packages: write
     steps:
       - name: Install Apptainer
-        uses: maouw/github-action-apptainer-install@v1
+        uses: maouw/apptainer-actions/setup@v1
       - name: Check out code for the container build
         uses: actions/checkout@v4
+      - name: Get version
+        shell: bash
+        run: |
+          if [[ "${GITHUB_REF_TYPE:-}" == "tag" ]]; then
+            case "${GITHUB_REF_NAME:-}"
+              v?*) IMAGE_VERSION="${GITHUB_REF_NAME#v}";;
+              *@?*) IMAGE_VERSION="${GITHUB_REF_NAME#*@}";;
+        *) echo "Invalid tag: \"${GITHUB_REF_NAME:-}\"" >&2; exit 1;;
+          esac
+          echo "IMAGE_VERSION=${IMAGE_VERSION}" >> "${GITHUB_ENV}"
+         fi
       - name: Build Container
-        shell: bash
-        run: |
-          set -eE -o pipefail
-          input_def="${input_def:-Singularity}"
-          output_sif="${output_sif:-container.sif}"
-          echo "Building container from $input_def to $output_sif..."
-          apptainer build --fix-perms --warn-unused-build-args --fakeroot container.sif Singularity
-          echo "Container built."
-          echo "Cleaning up..."
-          apptainer cache clean --force
-          tag="${tag:-latest}"
-          echo "Tag is $tag."
-          echo "tag=$tag" >> $GITHUB_ENV
-      - name: Login and Deploy Container
-        shell: bash
-        run: |
-          apptainer remote login -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }} oras://ghcr.io
-          apptainer push container.sif oras://ghcr.io/${{ github.repository }}:${tag}
+        uses: maouw/apptainer-actions/build-and-push@v1
+        with:
+          deffile: Singularity
+          image-version: ${{ env.IMAGE_VERSION }}
+
