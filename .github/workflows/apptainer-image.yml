@@ -21,7 +21,7 @@ jobs:
       - name: Install Apptainer
         uses: uw-psych/apptainer-actions/setup@dev
       - name: Clear disk space
-        uses: maouw/apptainer-actions/make-disk-space@dev
+        uses: uw-psych/apptainer-actions/make-disk-space@dev
       - name: Check out code for the container build
         uses: actions/checkout@v4
       - name: Get version
@@ -36,7 +36,7 @@ jobs:
             echo "IMAGE_VERSION=${IMAGE_VERSION}" >> "${GITHUB_ENV}"
           fi
       - name: Build Container
-        uses: maouw/apptainer-actions/build-and-push@dev
+        uses: uw-psych/apptainer-actions/build-and-push@dev
         with:
           deffile: Singularity
           image-version: ${{ env.IMAGE_VERSION }}
