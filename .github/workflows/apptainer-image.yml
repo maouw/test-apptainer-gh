@@ -20,8 +20,8 @@ jobs:
     steps:
       - name: Install Apptainer
         uses: uw-psych/apptainer-actions/setup@dev
-      - name: Clear disk space
-        uses: uw-psych/apptainer-actions/make-disk-space@dev
+      # - name: Clear disk space
+      #   uses: uw-psych/apptainer-actions/make-disk-space@dev
       - name: Check out code for the container build
         uses: actions/checkout@v4
       - name: Get version
