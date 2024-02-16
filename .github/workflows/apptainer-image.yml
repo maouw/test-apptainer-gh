@@ -43,3 +43,10 @@ jobs:
           deffile: 'dir/Singularity'
           image-version: ${{ env.IMAGE_VERSION }}
 
+      - name: Build Container again
+        uses: uw-psych/apptainer-actions/build-and-push@dev
+        with:
+          deffile: 'dir/Singularity'
+          image-name: "image-2"
+          image-version: ${{ env.IMAGE_VERSION }}
+
