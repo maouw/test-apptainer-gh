@@ -1,6 +1,9 @@
 Bootstrap: docker
 From: debian:stable-slim
 
+%labels
+	erafef 1
+
 %post
 	export DEBIAN_FRONTEND=noninteractive
 	set -eE
@@ -23,3 +26,9 @@ From: debian:stable-slim
 %test
 	set -eE
 	/.singularity.d/runscript "Cowsay runs!"
+
+%labels
+	efarf         2 # dsfs
+	ffarf \#a
+	et \#a # ae
+
