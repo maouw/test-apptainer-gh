@@ -8,9 +8,9 @@ From: debian:stable-slim
 	export DEBIAN_FRONTEND=noninteractive
 	set -eE
 	# Install cowsay
-	apt-get update --yes --quiet && \
-	apt-get install --yes --quiet cowsay && \
-	apt-get clean --yes --quiet && \
+	apt-get update -qq && \
+	apt-get install -yq cowsay && \
+	apt-get clean -yq && \
 	rm -rf /var/lib/apt/lists/*
 
 %environment
@@ -28,7 +28,5 @@ From: debian:stable-slim
 	/.singularity.d/runscript "Cowsay runs!"
 
 %labels
-	efarf         2 # dsfs
-	ffarf \#a
-	et \#a # ae
+	org.opencontainers.image.version 0.0.1
 
