@@ -11,6 +11,8 @@ on:
       - 'v*.*.*'
       - 'v*.*.*-*'
       - '*@*'
+  release:
+    types: [published]
 
 jobs:
   build-and-push-image:
@@ -21,32 +23,19 @@ jobs:
         packages: write
     steps:
       - name: Install Apptainer
-        uses: uw-psych/apptainer-actions/setup@dev
-      # - name: Clear disk space
-      #   uses: uw-psych/apptainer-actions/make-disk-space@dev
+        with:
+          apptainer-version: '1.2.5'
+        uses: maouw/apptainer-actions/setup@dev
       - name: Check out code for the container build
         uses: actions/checkout@v4
-      - name: Get version
-        shell: bash
-        run: |
-          if [[ "${GITHUB_REF_TYPE:-}" == "tag" ]]; then
-            case "${GITHUB_REF_NAME:-}" in
-              v?*) INPUT_IMAGE_VERSION="${GITHUB_REF_NAME#v}";;
-              *@?*) INPUT_IMAGE_VERSION="${GITHUB_REF_NAME#*@}";;
-              *) echo "Invalid tag: \"${GITHUB_REF_NAME:-}\"" >&2; exit 1;;
-            esac
-            echo "INPUT_IMAGE_VERSION=${IMAGE_VERSION}" >> "${GITHUB_ENV}"
-          fi
-      - name: Build Container
-        uses: uw-psych/apptainer-actions/build-and-push@dev
+      - name: Clear disk space
+        uses: maouw/apptainer-actions/make-disk-space@dev
+      - name: Build and push Apptainer image
+        uses: maouw/apptainer-actions/build-and-push@dev
         with:
-          deffile: 'dir/Singularity'
-          image-version: ${{ env.INPUT_IMAGE_VERSION }}
-
-      - name: Build Container again
-        uses: uw-psych/apptainer-actions/build-and-push@dev
-        with:
-          deffile: 'dir/Singularity'
-          image-name: "image-2"
-          image-version: ${{ env.INPUT_IMAGE_VERSION }}
-
+          deffile: dir/Singularity
+          xtrace: 'true'
+          apptainer-tmpdir: ${{ github.workspace }}/apptainer-tmp
+          image-dir: ${{ github.workspace }}
+          image-version: ${{ github.ref_name }}
+          image-name: "image-1"
