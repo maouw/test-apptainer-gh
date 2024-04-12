@@ -2,15 +2,6 @@ name: Apptainer Build
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
-      - dev
-    tags:
-      - 'v*'
-      - 'v*.*.*'
-      - 'v*.*.*-*'
-      - '*@*'
   release:
     types: [published]
 
