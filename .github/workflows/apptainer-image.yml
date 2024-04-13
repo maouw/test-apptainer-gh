@@ -10,8 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     name: Build Apptainer image
     permissions:
-        contents: read
-        packages: write
+      contents: read
+      packages: write
     steps:
       - name: Install Apptainer
         with:
@@ -19,8 +19,8 @@ jobs:
         uses: maouw/apptainer-actions/setup@dev
       - name: Check out code for the container build
         uses: actions/checkout@v4
-      - name: Clear disk space
-        uses: maouw/apptainer-actions/make-disk-space@dev
+      # - name: Clear disk space
+      #   uses: maouw/apptainer-actions/make-disk-space@dev
       - name: Build and push Apptainer image
         uses: maouw/apptainer-actions/build-and-push@dev
         with:
@@ -28,5 +28,3 @@ jobs:
           xtrace: 'true'
           apptainer-tmpdir: ${{ github.workspace }}/apptainer-tmp
           image-dir: ${{ github.workspace }}
-          image-version: ${{ github.ref_name }}
-          image-name: "image-1"
